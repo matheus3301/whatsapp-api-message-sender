@@ -1,2 +1,4 @@
 node_modules
 *.sqlite
+*cookies.json
+puppeteer_data

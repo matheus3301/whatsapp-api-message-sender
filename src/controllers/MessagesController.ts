@@ -1,6 +1,8 @@
 import {Request,Response} from "express"
 import db from "../database/connection";
+
 import numberSanitize from "../util/numberSanitizer";
+import isValid from "../util/isValidPhone";
 
 export default class MessagesController{
     async create(req:Request, res:Response) {
@@ -8,6 +10,12 @@ export default class MessagesController{
         let message = new String(req.body.message);
 
         to = numberSanitize(to);
+
+        if(!isValid(to)){
+            return res.status(400).json({
+                error: "the given number is invalid"
+            });
+        }
 
         try{
 
@@ -29,5 +37,10 @@ export default class MessagesController{
         }
 
         
+    }
+
+    async index(){
+        const messages = db.select().from("messages");
+        return messages;
     }
 }
