@@ -68,6 +68,9 @@ const bot = async () => {
       await page.keyboard.press("Enter");
       await page.waitFor(2000);
 
+      message.sent = new Date();
+      messagesController.update(message);
+
       console.log(`Message ${message.id} has just sent`);
     } catch (err) {
       console.log(`Something went wrong on: ${message}`);
