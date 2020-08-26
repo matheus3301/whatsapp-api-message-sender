@@ -1,3 +1,3 @@
-export default function isValid(number:String){
-    return number.length >= 12;
+export default function isValid(number: String) {
+  return number.length >= 12;
 }

@@ -10,5 +10,5 @@ app.use(routes);
 
 //localhost:3333
 app.listen(3333, () => {
-    console.log("server running");
-})
+  console.log("server running");
+});
