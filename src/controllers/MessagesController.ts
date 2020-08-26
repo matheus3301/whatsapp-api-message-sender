@@ -4,6 +4,13 @@ import db from "../database/connection";
 import numberSanitize from "../util/numberSanitizer";
 import isValid from "../util/isValidPhone";
 
+export interface Message {
+  id: number;
+  to: string;
+  message: string;
+  sent: string;
+}
+
 export default class MessagesController {
   async create(req: Request, res: Response) {
     let to = new String(req.body.to);
@@ -36,7 +43,13 @@ export default class MessagesController {
   }
 
   async index() {
-    const messages = db.select().from("messages");
+    const messages = await db.select().from("messages").whereNull("sent");
     return messages;
+  }
+
+  async update(message: Message) {
+    return await db("messages").where("id", "=", message.id).update({
+      sent: message.sent,
+    });
   }
 }
