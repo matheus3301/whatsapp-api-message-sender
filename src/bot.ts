@@ -2,6 +2,7 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import MessagesController from "./controllers/MessagesController";
 import encodeRFC5987ValueChars from "./util/stringToUrl";
+import dotenv from "dotenv";
 
 const setup = async () => {
   const browser = await puppeteer.launch({
@@ -35,6 +36,9 @@ const setup = async () => {
 
 const bot = async () => {
   const messagesController = new MessagesController();
+  const messages = await messagesController.index();
+
+  if (!messages.length) return;
 
   const cookiesString = fs.readFileSync("cookies.json", "utf8");
   const cookies = JSON.parse(cookiesString);
@@ -50,10 +54,6 @@ const bot = async () => {
   await page.setCookie.apply(page, cookies);
 
   await page.goto("https://web.whatsapp.com/", { waitUntil: "load" });
-
-  const messages = await messagesController.index();
-
-  console.log(messages);
 
   for (let message of messages) {
     try {
@@ -76,9 +76,14 @@ const bot = async () => {
       console.log(`Something went wrong on: ${message}`);
     }
   }
+
+  await browser.close();
 };
 
 (async () => {
+  dotenv.config();
+  const TTL: number = parseInt(`${process.env.TTL}`);
+
   await setup();
-  await bot();
+  setInterval(bot, TTL);
 })();
